@@ -20,14 +20,6 @@
 #ifndef __PARSE_H__
 #define __PARSE_H__
 
-#include <inttypes.h>
-#include <avr/pgmspace.h>
-
-typedef struct
-{
-    const char* Mnemonic;
-    uint8_t dOffset;
-} MNEMONIC;
 
 typedef enum
 {
@@ -46,16 +38,17 @@ typedef enum
 
 #define MNEM_STR 0
 #define MNEM_VAL 3
-extern const PROGMEM char Mnemonics [][4];
+extern const PROGMEM char Mnemonics[][4];
 
 extern uint8_t g_ucSlaveCh;
+extern uint16_t g_ucErrCount;
 
 void SerPrompt(ERROR, uint8_t);
 void SerStr(char*);
 void jobParseData(void);
 
 void ParseGetParam(uint8_t);
-void ParseSetParam(uint8_t, double);
+void ParseSetParam(uint8_t, float);
 void SetActivityTimer(uint8_t);
 
 #endif

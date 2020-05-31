@@ -21,14 +21,14 @@
 #define _I2CREG_H_
 
 #include <inttypes.h>
-#include "I2C.h"
+#include "i2c.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    int8_t I2C_Register_Read(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data);
-    int8_t I2C_Register_Write(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data);
+    int8_t I2CRegister_Read(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data);
+    int8_t I2CRegister_Write(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data);
 
 #ifdef __cplusplus
 }
