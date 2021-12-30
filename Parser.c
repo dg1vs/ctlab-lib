@@ -28,7 +28,7 @@
 
 #include "Parser.h"
 #include "Uart.h"
-
+#include "dcg.h"
 
 #define NDEBUG
 #include "debug.h"
@@ -71,7 +71,7 @@ void SerPrompt(ERROR Err, uint8_t Status)
 
 
 //---------------------------------------------------------------------------------------------
-void SerStr(char* str)
+void SerStr (char* str)
 {
     printf_P(PSTR("%s\n"), str);
 }
@@ -86,6 +86,7 @@ void jobParseData(void)
     static ERROR OvflError = NoErr;
     uint8_t SubCh;
     char prev;
+
 
     count = Uart_GetRxCount();
 
@@ -113,6 +114,7 @@ void jobParseData(void)
     while (count--)
     {
         prev = c;
+
         Uart_GetRxData((uint8_t*)&c, 1);
 
         if (c >= ' ' && (uint8_t)c <= 127)
@@ -136,12 +138,10 @@ void jobParseData(void)
                 SerInpCount--;
             }
         }
-
         else if (c == '\n' && prev == '\r')
         {
             continue;
         }
-
         else if (c == '\r' || c == '\n')
         {
             // after \r or \n, we consider a new command complete
@@ -153,7 +153,7 @@ void jobParseData(void)
             // Zero-Terminate String in Buffer
             g_cSerInpStr[SerInpCount] = 0;
 
-            count = 0; // stop while loop
+            count = 0;              // stop while loop
             SerInpCount = 0;
             s = g_cSerInpStr;
             while(*s == ' ') s++;
@@ -183,11 +183,10 @@ void jobParseData(void)
                     while (*s == ' ') s++;
                     if (*s == ':')
                     {
-                        // Syntax "#x:result /r/n" is OK
+                                            // Syntax "#x:result /r/n" is OK
                         SerStr(g_cSerInpStr);  // forward the result (as it is)
                         Error = NoErr;      // don't report an error for a shortened result
                         continue;           // go on and handle next characters
-
                     }
                 }
 
@@ -218,7 +217,7 @@ void jobParseData(void)
                     // Omni-Befehl, Weiterleiten (and process locally later, too)
                     SerStr(g_cSerInpStr);
                     s++;
-                    while (*s == ' ') s++;
+                    while(*s == ' ') s++;
                     if (s != pos)
                     {
                         CHECKPOINT;
@@ -229,7 +228,7 @@ void jobParseData(void)
                 else
                 {
                     value = 0;
-                    if (*s >= '0' && *s <= '9')     // actually, address can only be between 0...7
+                    if (*s >= '0' && *s <= '9')
                     {
                         value += *s - '0';
                         s++;
@@ -241,7 +240,7 @@ void jobParseData(void)
                         break;
                     }
                     // check, if only spaces are between single digit address and colon ':'
-                    while (*s == ' ') s++;
+                    while(*s == ' ') s++;
                     if (s != pos)
                     {
                         CHECKPOINT;
@@ -257,7 +256,7 @@ void jobParseData(void)
                     }
                 }
                 s = pos + 1;
-                while (*s == ' ') s++;
+                while(*s == ' ') s++;
                 if (*s == 0)
                 {
                     CHECKPOINT;
@@ -274,10 +273,11 @@ void jobParseData(void)
                 break;
             }
 #endif
+
             // Ist für uns, ab hier eigentliche Verarbeitung
             ParserFlags.Verbose = strchr(s, '!') != NULL || strchr(s, '?') != NULL;
 
-            pos = strchr(s, '$');
+            pos = strchr(g_cSerInpStr, '$');
             if (pos && isxdigit(pos[1]))
             {
                 uint8_t Sum = 0;
@@ -290,9 +290,7 @@ void jobParseData(void)
                 {
                     calcSum ^= *ss++;
                 }
-
                 i = isxdigit(pos[2]) ? 2 : 1;
-
                 // retrieve checksum from command after '$'
                 while (i)
                 {
@@ -317,8 +315,8 @@ void jobParseData(void)
                     g_ucErrCount++;
                     break;
                 }
-            }
 
+            }
             if (*s >= '0' && *s <= '9')
             {
                 // Direkter SubCh-Aufruf
@@ -368,7 +366,7 @@ void jobParseData(void)
                     break;
                 }
                 value = 0;
-                while (*s == ' ') s++;
+                while(*s == ' ') s++;
                 if (*s >= '0' && *s <= '9')
                 {
                     while (*s >= '0' && *s <= '9' && value <= 255)
@@ -430,7 +428,7 @@ void jobParseData(void)
             if (*s == '=')
             {
                 s++;
-                while (*s == ' ') s++;
+                while(*s == ' ') s++;
                 if (!(*s >= '0' && *s <= '9') && *s != '-')
                 {
                     CHECKPOINT;

@@ -40,7 +40,7 @@ int8_t I2CRegister_Read(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data)
     msg[1].data_ptr = data;
     msg[1].len = len;
 
-    if (2 == i2c_transfer(msg, 2))
+    if (2 == I2C_Transfer(msg, 2))
     {
         if (len <= 2)
         {
@@ -82,5 +82,5 @@ int8_t I2CRegister_Write(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data)
     {
         msg[1].data_ptr = data;
     }
-    return 2 == i2c_transfer(msg, 2) ? 0 : -1;
+    return 2 == I2C_Transfer(msg, 2) ? 0 : -1;
 }

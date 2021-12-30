@@ -74,7 +74,7 @@ static volatile uint8_t i2c_err;
 static volatile uint8_t i2c_busy;
 static volatile uint8_t i2c_status;
 
-int8_t i2c_transfer(I2C_MSG* msg, uint8_t count)
+int8_t I2C_Transfer(I2C_MSG* msg, uint8_t count)
 {
     i2c_msg = msg;
     i2c_msg_len = count;

@@ -21,7 +21,7 @@
 #define _I2CREG_H_
 
 #include <inttypes.h>
-#include "i2c.h"
+#include "I2C.h"
 
 #ifdef __cplusplus
 extern "C" {

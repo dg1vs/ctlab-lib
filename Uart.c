@@ -20,7 +20,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#include "uart.h"
+#include "Uart.h"
 
 #if defined(__AVR_ATmega8__) || defined(__AVR_ATmega32__)
 
@@ -71,7 +71,7 @@
 #elif defined (__AVR_ATmega168__)
 #define UART_RX_vect    USART_RX_vect
 #define UART_UDRE_vect  USART_UDRE_vect
-#elif defined(__AVR_ATmega324P__) || defined(__AVR_ATmega644__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega644PA__)|| defined(__AVR_ATmega1284P__)
+#elif defined(__AVR_ATmega324P__) || defined(__AVR_ATmega644__) || defined(__AVR_ATmega644P__) || defined(__AVR_ATmega644PA__) || defined(__AVR_ATmega1284P__)
 #define UART_RX_vect    USART0_RX_vect
 #define UART_UDRE_vect  USART0_UDRE_vect
 #else
