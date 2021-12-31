@@ -23,15 +23,26 @@
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 
-#define COLUMN_MAX      8
-#define LINE_MAX        2
-#define LCD_PCA9555D_ADDRESS 0x40
+#ifdef COMPILE_WITH_DISPLAY204             /* PM 20*4 */
+	#define COLUMN_MAX     20
+	#define LINE_MAX        4
+	#define LCD_PCA9555D_ADDRESS 0x40
+#else                                      /* PM8 */
+	#define COLUMN_MAX      8
+	#define LINE_MAX        2
+	#define LCD_PCA9555D_ADDRESS 0x40
+#endif
 
 #define SCROLL_DISTANCE 3
 
 #define BUTTON_DOWN     0x01
 #define BUTTON_UP       0x02
 #define BUTTON_ENTER    0x04
+
+#ifdef COMPILE_WITH_DISPLAY204
+	#define BUTTON_SOFT_KEY_1   0x08
+	#define BUTTON_SOFT_KEY_2   0x10
+#endif
 
 #define CURSOR_SOLID    0
 #define CURSOR_CONCAVE  1
@@ -44,19 +55,21 @@
 #define SMALL_A         7
 
 #ifdef __cplusplus
-extern "C" {
-	#endif
+	extern "C" {
+#endif
 
 uint8_t Lcd_Init(void);
 void Lcd_Write(uint8_t, uint8_t, uint8_t, const char*);
 void Lcd_Write_P(uint8_t, uint8_t, uint8_t, const char*);
+void Lcd_OverWrite_P(uint8_t, uint8_t, uint8_t, const char*);
+void Lcd_ClearLine(uint8_t y);
 uint8_t Lcd_GetButton(void);
 
 extern const PROGMEM char ucWhites[];
 
 #ifdef __cplusplus
-}
+	}
 #endif
 
-#endif /* _LCD_H_ */
+#endif /* __LCD_H__ */
 
