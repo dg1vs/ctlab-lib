@@ -55,6 +55,36 @@ int8_t I2CRegister_Read(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data)
     return -1;
 }
 
+
+int8_t I2CRegister_ReadImplicit(uint8_t addr, uint8_t len, uint8_t* data)
+{
+
+    I2C_MSG msg[1];
+
+
+    msg[0].addr = addr;
+    msg[0].read = 1;
+    msg[0].nostart = 0;
+    msg[0].data_ptr = data;
+    msg[0].len = len;
+
+    if (1 == I2C_Transfer(msg, 1))
+    {
+        if (len <= 2)
+        {
+            data[0] = msg[0].data[0];
+            if (len == 2)
+            {
+                data[1] = msg[0].data[1];
+            }
+        }
+        return 0;
+    }
+    return -1;
+}
+
+
+
 int8_t I2CRegister_Write(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data)
 {
     I2C_MSG msg[2];
@@ -82,5 +112,43 @@ int8_t I2CRegister_Write(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data)
     {
         msg[1].data_ptr = data;
     }
-    return 2 == I2C_Transfer(msg, 2) ? 0 : -1;
+    return ((2 == I2C_Transfer(msg, 2)) ? 0 : -1 );
+}
+
+
+int8_t I2CRegister_WriteImplicit(uint8_t addr, uint8_t len, uint8_t* data)
+{
+    I2C_MSG msg[2];
+
+    msg[0].addr = addr;
+    msg[0].read = 0;
+    msg[0].nostart = 0;
+    msg[0].len = 1;
+    msg[0].data[0] = data[0];                           // pointer register value
+
+    if (len > 1)
+    {
+        msg[1].addr = addr;
+        msg[1].read = 0;
+        msg[1].nostart = 1;
+        msg[1].len = len - 1;
+
+        if ((len - 1) <= 2)
+        {
+            if ((len - 1) >= 1)
+                msg[1].data[0] = data[1];                   // first or single data byte
+            if ((len - 1) == 2)
+            {
+                msg[1].data[1] = data[2];               // optional second data byte
+            }
+        }
+        else
+        {
+            msg[1].data_ptr = data + 1;
+        }
+
+        return ((2 == I2C_Transfer(msg, 2)) ? 0 : -1);  // write pointer and 1 or 2 data bytes
+    }
+    else
+        return ((1 == I2C_Transfer(msg, 1)) ? 0 : -1);      // just "write" pointer
 }

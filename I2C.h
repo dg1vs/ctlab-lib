@@ -41,7 +41,7 @@ extern "C" {
 
     void I2C_Init(void);
     int8_t I2C_Transfer(I2C_MSG* msg, uint8_t count);
-    int8_t I2CRegister_Read(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data);
+    //int8_t I2CRegister_Read(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data);
 
 #ifdef __cplusplus
 }

@@ -27,8 +27,9 @@ extern "C" {
 #endif
 
 void Encoder_MainFunction(void);
-int8_t Encoder_GetPosition(uint8_t);
-int8_t Encoder_GetAndResetPosition(void);
+int16_t Encoder_GetPosition(uint8_t);
+int16_t Encoder_GetAndResetPosition(void);
+void Encoder_SetAcceleration(uint16_t uI1, uint16_t uI2, uint16_t uI3, uint16_t uI4);
 
 #ifdef __cplusplus
 extern "C" {

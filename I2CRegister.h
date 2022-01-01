@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef _I2CREG_H_
-#define _I2CREG_H_
+#ifndef __I2CREG_H__
+#define __I2CREG_H__
 
 #include <inttypes.h>
 #include "I2C.h"
@@ -30,8 +30,11 @@ extern "C" {
     int8_t I2CRegister_Read(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data);
     int8_t I2CRegister_Write(uint8_t addr, uint8_t reg, uint8_t len, uint8_t* data);
 
+    int8_t I2CRegister_ReadImplicit(uint8_t addr, uint8_t len, uint8_t* data);
+    int8_t I2CRegister_WriteImplicit(uint8_t addr, uint8_t len, uint8_t* data);
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* __I2CREG_H__ */
