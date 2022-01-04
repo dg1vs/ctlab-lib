@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006, 2007, 2008 by Hartmut Birr
+ * Copyright (c) 2006, 2007 by Hartmut Birr
  *
  * This program is free software; you can redistribute it and/or
  * mmodify it under the terms of the GNU General Public License
@@ -16,8 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  */
-
-#include "config.h"
 
 #include <util/twi.h>
 #include <util/delay.h>
@@ -106,7 +104,6 @@ int8_t I2C_Transfer(I2C_MSG* msg, uint8_t count)
 #ifdef USE_TICKER_FOR_TIMEOUT
 #else
         _delay_us(125);
-        timeout++;
 #endif
     }
     if (i2c_busy)

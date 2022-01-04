@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 by Hartmut Birr
+ * Copyright (c) 2007 by Hartmut Birr, Thoralt Franz
  *
  * This program is free software; you can redistribute it and/or
  * mmodify it under the terms of the GNU General Public License
@@ -23,15 +23,16 @@
 #include <inttypes.h>
 
 #ifdef __cplusplus
-extern "C" {
+    extern "C" {
 #endif
 
 void Encoder_MainFunction(void);
-int8_t Encoder_GetPosition(uint8_t);
-int8_t Encoder_GetAndResetPosition(void);
+int16_t Encoder_GetPosition(uint8_t);
+int16_t Encoder_GetAndResetPosition(void);
+void Encoder_SetAcceleration(uint16_t uI1, uint16_t uI2, uint16_t uI3, uint16_t uI4);
 
 #ifdef __cplusplus
-extern "C" {
+    extern "C" {
 #endif
 
 #endif /* _ENCODER_H_ */

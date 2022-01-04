@@ -63,13 +63,13 @@ void __Lcd_WriteCmd(uint8_t value)
     data[0] = value;
 
     data[1] = 0;                        // RS=0, R/W=0, E=0
-    I2CRegister_Write(0x40, 2, 2, data);
+    I2CRegister_Write(LCD_PCA9555D_ADDRESS, 2, 2, data);
 
     data[1] = 1;                        // RS=0, R/W=0, E=1
-    I2CRegister_Write(0x40, 3, 1, data + 1);
+    I2CRegister_Write(LCD_PCA9555D_ADDRESS, 3, 1, data + 1);
 
     data[1] = 0;                        // RS=0, R/W=0, E=0
-    I2CRegister_Write(0x40, 3, 1, data + 1);
+    I2CRegister_Write(LCD_PCA9555D_ADDRESS, 3, 1, data + 1);
 }
 
 void __Lcd_WriteData(uint8_t value)
@@ -79,13 +79,13 @@ void __Lcd_WriteData(uint8_t value)
     data[0] = value;
 
     data[1] = 0x04;                     // RS=1, R/W=0, E=0
-    I2CRegister_Write(0x40, 2, 2, data);
+    I2CRegister_Write(LCD_PCA9555D_ADDRESS, 2, 2, data);
 
     data[1] = 0x05;                     // RS=1, R/W=0, E=1
-    I2CRegister_Write(0x40, 3, 1, data + 1);
+    I2CRegister_Write(LCD_PCA9555D_ADDRESS, 3, 1, data + 1);
 
     data[1] = 0x04;                     // RS=1, R/W=0, E=0
-    I2CRegister_Write(0x40, 3, 1, data + 1);
+    I2CRegister_Write(LCD_PCA9555D_ADDRESS, 3, 1, data + 1);
 }
 
 
@@ -98,16 +98,16 @@ uint8_t Lcd_Init(void)
     // config register
     data[0] = 0x00;                     // P0 is output
     data[1] = 0xf8;                     // P1.0-2 is output, P1.3-7 is input
-    if (I2CRegister_Write(0x40, 6, 2, data))
+    if (I2CRegister_Write(LCD_PCA9555D_ADDRESS, 6, 2, data))
     {
-        DPRINT(PSTR("%s: Couldn't detect a device at address 0x40\n"), __FUNCTION__);
+        DPRINT(PSTR("%s: Couldn't detect a device at address LCD_PCA9555D_ADDRESS \n"), __FUNCTION__);
         return 0;
     }
 
     // polarity inversion register
     data[0] = 0x00;
     data[1] = 0x38;                     // invert the buttons
-    I2CRegister_Write(0x40, 4, 2, data);
+    I2CRegister_Write(LCD_PCA9555D_ADDRESS, 4, 2, data);
 
 
     _delay_ms(30);
@@ -213,7 +213,7 @@ void Lcd_Write_P(uint8_t x, uint8_t y, uint8_t len, const char* data)
     __Lcd_InternalWrite(x, y, len, (const char*)data, 1);
 }
 
-void LCDOverwrite_P(uint8_t x, uint8_t y, uint8_t len, const char* data)
+void Lcd_OverWrite_P(uint8_t x, uint8_t y, uint8_t len, const char* data)
 {
     //  clearing leading and trailing whitespaces instead of calling LCDClearLine(y) to save traffic on I2C-Bus
     Lcd_Write_P(0, y, x, ucWhites);

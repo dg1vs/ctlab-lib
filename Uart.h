@@ -23,7 +23,7 @@
 #include <inttypes.h>
 
 #ifndef F_CPU
-#error Please define F_CPU
+	#error Please define F_CPU
 #endif /* !F_CPU */
 
 #ifndef UART_BAUDRATE
@@ -35,9 +35,9 @@
 
 
 #ifdef UART_2X
-#define INIT_UBRR       (F_CPU / 8 / UART_BAUDRATE - 1)
+	#define INIT_UBRR       (F_CPU / 8 / UART_BAUDRATE - 1)
 #else
-#define INIT_UBRR       (F_CPU / 16 / UART_BAUDRATE - 1)
+	#define INIT_UBRR       (F_CPU / 16 / UART_BAUDRATE - 1)
 #endif
 
 
@@ -65,4 +65,4 @@ extern "C" {
 }
 #endif
 
-#endif
+#endif /* _UART_H_ */
