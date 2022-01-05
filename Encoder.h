@@ -26,6 +26,7 @@
     extern "C" {
 #endif
 
+void Encoder_Init(uint8_t ep);
 void Encoder_MainFunction(void);
 int16_t Encoder_GetPosition(uint8_t);
 int16_t Encoder_GetAndResetPosition(void);

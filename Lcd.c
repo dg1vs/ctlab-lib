@@ -17,7 +17,6 @@
  *
  */
 
-#include "config.h"
 
 #include <inttypes.h>
 #include <avr/pgmspace.h>
@@ -27,6 +26,8 @@
 #include "I2CRegister.h"
 #include "Lcd.h"
 #include "Config.h"
+#include "Config_LcdChar.h"
+
 #define NDEBUG
 #include "debug.h"
 
@@ -43,8 +44,6 @@
 	static char DisplayData[16];
 	const PROGMEM char ucWhites[] = "        ";                /* 8 spaces */
 #endif
-
-
 
 void __Lcd_WriteCmd(uint8_t value)
 {
@@ -77,7 +76,6 @@ void __Lcd_WriteData(uint8_t value)
     data[1] = 0x04;                     // RS=1, R/W=0, E=0
     I2CRegister_Write(LCD_PCA9555D_ADDRESS, 3, 1, data + 1);
 }
-
 
 uint8_t Lcd_Init(void)
 {
@@ -119,9 +117,10 @@ uint8_t Lcd_Init(void)
 #endif
 
     __Lcd_WriteCmd(0x40);
-    for (i = 0; i < sizeof(cursor); i++)
+	// from Config_Char.h and Config_Char.c
+    for (i = 0; i < sizeof(LCD_ExtraCharacter); i++)
     {
-        __Lcd_WriteData(pgm_read_byte(&cursor[i]));
+        __Lcd_WriteData(pgm_read_byte(&LCD_ExtraCharacter[i]));
     }
     memset(DisplayData, ' ', sizeof(DisplayData));
     return 1;

@@ -25,9 +25,10 @@
 #include <avr/pgmspace.h>
 #include "Encoder.h"
 
-//TODO das ist nicht allgemeingültig es wird nur enmal Zugriff auf Params benötigt 
+// TODO das ist nicht allgemeingültig es wird nur enmal Zugriff auf Params benötigt 
 // TODO in switch(Params.ucEncoderPrescaler) benötigt
-#include "dds.h"
+// Add Encoder_Init(number of steps)
+#include "dcg.h"
 
 #ifndef ENCODER_PORT_A
 #define ENCODER_PORT_A  PINA
@@ -46,8 +47,13 @@
 #endif
 
 int16_t EncPosPrescaled;
-
 uint16_t uIncrement1 = 200, uIncrement2 = 50, uIncrement3 = 10, uIncrement4 = 1;
+uint8_t EncoderPrescaler;
+
+void Encoder_Init(uint8_t ep)
+{
+	EncoderPrescaler = ep;
+}
 
 void Encoder_SetAcceleration(uint16_t uI1, uint16_t uI2, uint16_t uI3, uint16_t uI4)
 {
@@ -205,7 +211,7 @@ void Encoder_MainFunction(void)
     {
         ucTableOffset = (EncState<<2) + next; // calculate index in table = state * 4 + new encoder state
 
-        switch(Params.ucEncoderPrescaler)
+        switch(EncoderPrescaler)
         {
         default:// well, actually no code here. To be implemented in case of new types of encoders having pulse counts other than 4 or 2
 				// if no predefined code is set in eeprom, revert to "4"
