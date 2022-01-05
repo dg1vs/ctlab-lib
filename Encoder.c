@@ -44,7 +44,7 @@
 
 int16_t EncPosPrescaled;
 uint16_t uIncrement1 = 200, uIncrement2 = 50, uIncrement3 = 10, uIncrement4 = 1;
-uint8_t EncoderPrescaler;
+uint8_t EncoderPrescaler = 4;
 
 void Encoder_Init(uint8_t ep)
 {

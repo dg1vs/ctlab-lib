@@ -27,7 +27,7 @@
 //#define USE_TICKER_FOR_TIMEOUT
 
 #ifdef USE_TICKER_FOR_TIMEOUT
-#include "timer.h"
+#include "Timer.h"
 #else
 #include <util/delay.h>
 #endif
@@ -45,15 +45,15 @@
 
 void I2C_Init(void)
 {
-    DPRINT(PSTR("initI2C()\n"));
+    //DPRINT(PSTR("initI2C()\n"));
     TWSR = 0;
 #if F_CPU < 3600000UL
     TWBR = 10;
 #else
     TWBR = (F_CPU / I2C_BUS_SPEED - 16) / 2;
-    DPRINT(PSTR("frequency=%d.%03dMHz, i2c-speed=%dkHz, TWBR=0x%x\n"),
-           (uint16_t)(F_CPU / 1000000), (uint16_t)((F_CPU / 1000) % 1000),
-           (uint16_t)(I2C_BUS_SPEED / 1000), (uint8_t)((F_CPU / I2C_BUS_SPEED - 16) / 2));
+    // DPRINT(PSTR("frequency=%d.%03dMHz, i2c-speed=%dkHz, TWBR=0x%x\n"),
+    //       (uint16_t)(F_CPU / 1000000), (uint16_t)((F_CPU / 1000) % 1000),
+    //       (uint16_t)(I2C_BUS_SPEED / 1000), (uint8_t)((F_CPU / I2C_BUS_SPEED - 16) / 2));
 #endif
 }
 
@@ -72,6 +72,10 @@ static volatile uint8_t i2c_err;
 static volatile uint8_t i2c_busy;
 static volatile uint8_t i2c_status;
 
+// TODO
+uint8_t dummy;
+
+
 int8_t I2C_Transfer(I2C_MSG* msg, uint8_t count)
 {
     i2c_msg = msg;
@@ -87,7 +91,7 @@ int8_t I2C_Transfer(I2C_MSG* msg, uint8_t count)
 #ifdef DEBUG
     if (count > 1)
     {
-        DPRINT(PSTR("%d\n"), msg[1].len);
+        //DPRINT(PSTR("%d\n"), msg[1].len);
     }
 #endif
     // send start condition
@@ -111,7 +115,7 @@ int8_t I2C_Transfer(I2C_MSG* msg, uint8_t count)
         TWCR = (1<<TWSTO) | (1<<TWINT) | (1<<TWEN);
         CHECKPOINT;
     }
-    DPRINT(PSTR("%d\n"), i2c_msg_len);
+    //DPRINT(PSTR("%d\n"), i2c_msg_len);
     return count - i2c_msg_len;
 }
 
@@ -128,7 +132,7 @@ ISR(TWI_vect)
     {
         case TW_REP_START:  // repeated start condition has been transmitted
         case TW_START:      // start condition has been transmitted
-            DPRINT(i2c_status == TW_START ? PSTR("TW_START\n") : PSTR("TW_REP_START\n"));
+            //DPRINT(i2c_status == TW_START ? PSTR("TW_START\n") : PSTR("TW_REP_START\n"));
             if (i2c_msg->read)
             {
                 // send SLA+R
@@ -146,7 +150,7 @@ ISR(TWI_vect)
             break;
 
         case TW_MT_SLA_ACK: // SLA+W has been transmitted and ACK has been received.
-            DPRINT(PSTR("TW_MT_SLA_ACK\n"));
+            //DPRINT(PSTR("TW_MT_SLA_ACK\n"));
             // send first data byte
             TWDR = *i2c_data;
             // start transfer
@@ -156,7 +160,7 @@ ISR(TWI_vect)
             break;
 
         case TW_MT_DATA_ACK:    // Data byte has been transmitted and ACK has been received.
-            DPRINT(PSTR("TW_MT_DATA_ACK\n"));
+            //DPRINT(PSTR("TW_MT_DATA_ACK\n"));
             if (i2c_data_len == 0)
             {
                 i2c_msg++;
@@ -189,7 +193,7 @@ ISR(TWI_vect)
 
         case TW_MT_SLA_NACK:    // SLA+W has been transmitted, but not acknowledged.
         case TW_MR_SLA_NACK:    // SLA+R has been transmitted, but not acknowledged.
-            DPRINT(i2c_status == TW_MT_SLA_NACK ? PSTR("TW_MT_SLA_NACK\n") : PSTR("TW_MR_SLA_NACK\n"));
+            //DPRINT(i2c_status == TW_MT_SLA_NACK ? PSTR("TW_MT_SLA_NACK\n") : PSTR("TW_MR_SLA_NACK\n"));
             // send stop condition
             twcr = (1<<TWSTO) | (1<<TWINT) | (1<<TWEN) | (1<<TWIE);
             i2c_err = I2C_ERR_SLA_NACK;
@@ -197,7 +201,7 @@ ISR(TWI_vect)
             break;
 
         case TW_MT_DATA_NACK:   // Data byte has been transmitted, but not acknowledged.
-            DPRINT(PSTR("TW_MT_DATA_NACK\n"));
+            //DPRINT(PSTR("TW_MT_DATA_NACK\n"));
             // send stop condition
             twcr = (1<<TWSTO) | (1<<TWINT) | (1<<TWEN) | (1<<TWIE);
             i2c_err = I2C_ERR_DATA_NACK;
@@ -205,14 +209,14 @@ ISR(TWI_vect)
             break;
 
         case TW_MT_ARB_LOST:    // Arbitration lost while in master mode.
-            DPRINT(PSTR("TW_MT_ARB_LOST\n"));
+            //DPRINT(PSTR("TW_MT_ARB_LOST\n"));
             i2c_err = I2C_ERR_ARB;
             i2c_busy = 0;
             // FIXME !!!!!!!!!!!!!!!
             break;
 
         case TW_MR_SLA_ACK: // SLA+R has been transmitted and ACK has been received.
-            DPRINT(PSTR("TW_MR_SLA_ACK\n"));
+            //DPRINT(PSTR("TW_MR_SLA_ACK\n"));
             if (i2c_data_len > 1)
             {
                 // send ACK
@@ -226,7 +230,7 @@ ISR(TWI_vect)
             break;
 
         case TW_MR_DATA_ACK:    // Data received, ACK returned.
-            DPRINT(PSTR("TW_MR_DATA_ACK\n"));
+            //DPRINT(PSTR("TW_MR_DATA_ACK\n"));
             *i2c_data++ = TWDR;
             if (i2c_data_len > 2)
             {
@@ -242,7 +246,7 @@ ISR(TWI_vect)
             break;
 
         case TW_MR_DATA_NACK:   // Data byte has been received, but not acknowledged.
-            DPRINT(PSTR("TW_MR_DATA_NACK\n"));
+            //DPRINT(PSTR("TW_MR_DATA_NACK\n"));
             *i2c_data = TWDR;
             if (i2c_msg_len > 1)
             {
@@ -261,12 +265,12 @@ ISR(TWI_vect)
             break;
 
         case TW_NO_INFO:    // No info.
-            DPRINT(PSTR("TW_NO_INFO\n"));
+            //DPRINT(PSTR("TW_NO_INFO\n"));
             // no action
             break;
 
         case TW_BUS_ERROR:  // Bus error.
-            DPRINT(PSTR("TW_BUS_ERROR\n"));
+            //DPRINT(PSTR("TW_BUS_ERROR\n"));
             i2c_err = I2C_ERR_BUS;
             i2c_busy = 0;
             // execute stop (bus is reset, no stop condition is sent)
@@ -274,7 +278,8 @@ ISR(TWI_vect)
             break;
 
         default:
-            DPRINT(PSTR("%02x\n"), i2c_status);
+            //DPRINT(PSTR("%02x\n"), i2c_status);
+			dummy = 1;
     }
 
     cli();
