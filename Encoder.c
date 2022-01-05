@@ -25,10 +25,6 @@
 #include <avr/pgmspace.h>
 #include "Encoder.h"
 
-// TODO das ist nicht allgemeingültig es wird nur enmal Zugriff auf Params benötigt 
-// TODO in switch(Params.ucEncoderPrescaler) benötigt
-// Add Encoder_Init(number of steps)
-#include "dcg.h"
 
 #ifndef ENCODER_PORT_A
 #define ENCODER_PORT_A  PINA
